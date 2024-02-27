@@ -76,7 +76,7 @@ const tryExecuteWithTimeMeasurement = async (callback) =>
     }
 }
 
-const spinWheelSingleTime = async () => {
+export const spinWheelSingleTime = async () => {
     try {
         const { result, time} = await tryExecuteWithTimeMeasurement(async () => await tryBombarding(1));
         const logToFileString = `${new Date()}; ${result}; ${time}`;
@@ -99,10 +99,12 @@ const spinWheelSingleTime = async () => {
             logToFile(`${new Date()}; ${result}; ${time}`);
         }
         
+        return logToFileString;
     }
     catch(error)
     {
         console.log('error executing main', error);
+        return 'error executing main';
     }
 }
 
