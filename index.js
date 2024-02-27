@@ -7,7 +7,7 @@ dotenv.config();
 
 const maxFailuresBeforeLog = 30;
 
-let nextRunDate = new Date().setMinutes(new Date().getMinutes() + 28);
+let nextRunDate = new Date();
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -118,9 +118,13 @@ const main = async () => {
     while(true)
     {
         const dateTimeNow = new Date();
+
+        console.log('current date', new Date());
+        console.log('next run date', nextRunDate);
         
         if(dateTimeNow > nextRunDate)
         {
+            console.log('spinning wheel');
             await spinWheelSingleTime(() => {
                 nextRunDate = new Date().setMinutes(new Date().getMinutes() + 58);
             });
