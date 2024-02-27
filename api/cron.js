@@ -1,4 +1,4 @@
-import { spinWheelSingleTime } from '../index.js';
+import { spinWheelSingleTime } from './index';
 
 export default async function handler(req, res) {
     const result = await spinWheelSingleTime();
