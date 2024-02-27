@@ -7,7 +7,7 @@ dotenv.config();
 
 const maxFailuresBeforeLog = 30;
 
-let nextRunDate = new Date();
+let nextRunDate = new Date().setMinutes(new Date().getMinutes() + 54);
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -118,9 +118,6 @@ const main = async () => {
     while(true)
     {
         const dateTimeNow = new Date();
-
-        console.log('current date', new Date());
-        console.log('next run date', nextRunDate);
         
         if(dateTimeNow > nextRunDate)
         {
