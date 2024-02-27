@@ -108,12 +108,12 @@ export const spinWheelSingleTime = async () => {
     }
 }
 
-// const main = async () => {
-//     while(true)
-//     {
-//         await spinWheelSingleTime();
-//         await delay(1000);
-//     }
-// }
+const main = async () => {
+    while(true)
+    {
+        await spinWheelSingleTime();
+        await delay(1000);
+    }
+}
 
-// await main();
+await main();
