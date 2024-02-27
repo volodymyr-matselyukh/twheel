@@ -5,6 +5,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const maxFailuresBeforeLog = 30;
+
+let nextRunDate = new Date().setMinutes(new Date().getMinutes() + 28);
+
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
@@ -76,7 +80,7 @@ const tryExecuteWithTimeMeasurement = async (callback) =>
     }
 }
 
-export const spinWheelSingleTime = async () => {
+export const spinWheelSingleTime = async (successCallback) => {
     try {
         const { result, time} = await tryExecuteWithTimeMeasurement(async () => await tryBombarding(1));
         const logToFileString = `${new Date()}; ${result}; ${time}`;
@@ -85,7 +89,7 @@ export const spinWheelSingleTime = async () => {
         {
             invalidTriesCounter ++;
 
-            if(invalidTriesCounter >= 60)
+            if(invalidTriesCounter >= maxFailuresBeforeLog)
             {
                 console.log('still blocked', new Date().toString());
                 invalidTriesCounter = 0;
@@ -97,6 +101,8 @@ export const spinWheelSingleTime = async () => {
             console.log(logToFileString);
         
             logToFile(`${new Date()}; ${result}; ${time}`);
+
+            successCallback();
         }
         
         return logToFileString;
@@ -111,7 +117,15 @@ export const spinWheelSingleTime = async () => {
 const main = async () => {
     while(true)
     {
-        await spinWheelSingleTime();
+        const dateTimeNow = new Date();
+        
+        if(dateTimeNow > nextRunDate)
+        {
+            await spinWheelSingleTime(() => {
+                nextRunDate = new Date().setMinutes(new Date().getMinutes() + 58);
+            });
+        } 
+        
         await delay(1000);
     }
 }
