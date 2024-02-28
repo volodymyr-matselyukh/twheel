@@ -7,7 +7,7 @@ dotenv.config();
 
 const maxFailuresBeforeLog = 30;
 
-let nextRunDate = new Date().setMinutes(new Date().getMinutes() + 54);
+let nextRunDate = new Date();
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
