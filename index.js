@@ -7,13 +7,12 @@ dotenv.config();
 
 const maxFailuresBeforeLog = 30;
 
-let nextRunDate = new Date();
+//let nextRunDate = new Date();
+let nextRunDate = new Date().setMinutes(new Date().getMinutes() + 15);
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
-
-let invalidTriesCounter = 0;
 
 const bombardWithPostTransactions = async () => {
     let score = 0;
@@ -28,6 +27,7 @@ const bombardWithPostTransactions = async () => {
             headers: {
                 'Content-Type': 'multipart/form-data;',
                 Cookie: process.env.cookie,
+                Cookie: process.env.security_cookie,
             }
         });
 
@@ -87,17 +87,10 @@ export const spinWheelSingleTime = async (successCallback) => {
 
         if(result === 0)
         {
-            invalidTriesCounter ++;
-
-            if(invalidTriesCounter >= maxFailuresBeforeLog)
-            {
-                console.log('still blocked', new Date().toString());
-                invalidTriesCounter = 0;
-            }
+            console.log('failed attempt', new Date().toString());
         }
         else
         {
-            invalidTriesCounter = 0;
             console.log(logToFileString);
         
             logToFile(`${new Date()}; ${result}; ${time}`);
@@ -123,11 +116,12 @@ const main = async () => {
         {
             console.log('spinning wheel');
             await spinWheelSingleTime(() => {
-                nextRunDate = new Date().setMinutes(new Date().getMinutes() + 58);
+                nextRunDate = new Date().setMinutes(new Date().getMinutes() + 60);
+                console.log('next run', nextRunDate.toString());
             });
         } 
         
-        await delay(1000);
+        await delay(10000);
     }
 }
 
