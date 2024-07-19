@@ -13,13 +13,13 @@ const ACCOUNTS = JSON.parse(process.env.ACCOUNTS!) as unknown as [
   }
 ];
 
-const getRandomMinutes = (upperLimit: number) => {
+const getRandomNumber = (upperLimit: number) => {
   return Math.round(Math.random() * upperLimit);
 };
 
 ACCOUNTS.forEach((account) => {
   const nextRun = new Date();
-  nextRun.setMinutes(nextRun.getMinutes() + getRandomMinutes(10));
+  nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(10));
   account.nextRun = nextRun;
 });
 
@@ -124,20 +124,20 @@ const runSpinningWheelInALoop = () => {
     const dateTimeNow = new Date();
     const utcHours = dateTimeNow.getUTCHours();
 
-    if(utcHours > 22 || utcHours < 7)
-    {
-      console.log("It's night time. No spinning the wheel");
-      return;
-    }
-
     const promises: Promise<string>[] = [];
 
     for (let account of ACCOUNTS) {
       if (account.nextRun < dateTimeNow) {
         const successCallback = (log: string) => {
           const nextRun = new Date();
+          if(utcHours > 22)
+          {
+            nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+            console.log("it's too late. I go to bed", account);
+          }
+
           nextRun.setMinutes(
-            new Date().getMinutes() + 60 + getRandomMinutes(20)
+            new Date().getMinutes() + 60 + getRandomNumber(20)
           );
 
           account.nextRun = nextRun;
@@ -146,7 +146,13 @@ const runSpinningWheelInALoop = () => {
 
         const errorCallback = (log: string) => {
           const nextRun = new Date();
-          nextRun.setMinutes(new Date().getMinutes() + getRandomMinutes(10));
+          if(utcHours > 22)
+          {
+            nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+            console.log("it's too late. I go to bed", account);
+          }
+
+          nextRun.setMinutes(new Date().getMinutes() + getRandomNumber(10));
 
           account.nextRun = nextRun;
           console.log(

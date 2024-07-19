@@ -43,12 +43,12 @@ var fs = require("fs");
 var util = require("util");
 dotenv.config();
 var ACCOUNTS = JSON.parse(process.env.ACCOUNTS);
-var getRandomMinutes = function (upperLimit) {
+var getRandomNumber = function (upperLimit) {
     return Math.round(Math.random() * upperLimit);
 };
 ACCOUNTS.forEach(function (account) {
     var nextRun = new Date();
-    nextRun.setMinutes(nextRun.getMinutes() + getRandomMinutes(10));
+    nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(10));
     account.nextRun = nextRun;
 });
 var maxFailuresBeforeLog = 30;
@@ -160,22 +160,26 @@ var runSpinningWheelInALoop = function () {
                 case 0:
                     dateTimeNow = new Date();
                     utcHours = dateTimeNow.getUTCHours();
-                    if (utcHours > 22 || utcHours < 7) {
-                        console.log("It's night time. No spinning the wheel");
-                        return [2 /*return*/];
-                    }
                     promises = [];
                     _loop_1 = function (account) {
                         if (account.nextRun < dateTimeNow) {
                             var successCallback = function (log) {
                                 var nextRun = new Date();
-                                nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomMinutes(20));
+                                if (utcHours > 22) {
+                                    nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+                                    console.log("it's too late. I go to bed", account);
+                                }
+                                nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomNumber(20));
                                 account.nextRun = nextRun;
                                 console.log(log, "next run:", account.nextRun.toUTCString());
                             };
                             var errorCallback = function (log) {
                                 var nextRun = new Date();
-                                nextRun.setMinutes(new Date().getMinutes() + getRandomMinutes(10));
+                                if (utcHours > 22) {
+                                    nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+                                    console.log("it's too late. I go to bed", account);
+                                }
+                                nextRun.setMinutes(new Date().getMinutes() + getRandomNumber(10));
                                 account.nextRun = nextRun;
                                 console.log("run failed", log, "next run:", account.nextRun.toUTCString());
                             };
