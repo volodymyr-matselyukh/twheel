@@ -10,3 +10,6 @@ docker exec -it 4b5b003802a6 /bin/bash
 npx tsc ./src/index.ts
 
 fly deploy
+
+# tun typescript file
+npx ts-node ./src/index.ts

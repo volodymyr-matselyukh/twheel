@@ -23,6 +23,8 @@ ACCOUNTS.forEach((account) => {
   account.nextRun = nextRun;
 });
 
+const WHITE_LIST = ["volodymyr", "oneplusone", "whale", "xiomi", "oksana", "gt_turbo"];
+
 const maxFailuresBeforeLog = 30;
 const ONE_MINUTE = 60000;
 
@@ -76,7 +78,9 @@ const logToFile = function (logString: string) {
   fs.appendFileSync("./log", util.format(logString) + "\n");
 };
 
-const tryExecuteWithTimeMeasurement = async (callback?: () => Promise<number>) => {
+const tryExecuteWithTimeMeasurement = async (
+  callback?: () => Promise<number>
+) => {
   try {
     const precision = 3; // 3 decimal places
     const start = process.hrtime();
@@ -101,7 +105,7 @@ export const spinWheelSingleTime = async (
       async () => await bombardWithPostTransactions(accountName)
     );
 
-    const logToFileString = `${accountName} ${new Date().toUTCString()}; ${result}; ${time}`;
+    const logToFileString = `${accountName} score: ${result}; ${time} ${new Date().toUTCString()}`;
 
     if (!result || result === 0) {
       errorCallback?.(logToFileString);
@@ -121,38 +125,20 @@ export const spinWheelSingleTime = async (
 
 const runSpinningWheelInALoop = () => {
   setInterval(async () => {
-    const dateTimeNow = new Date();
-    const utcHours = dateTimeNow.getUTCHours();
-
     const promises: Promise<string>[] = [];
+    const dateTimeNow = new Date();
 
     for (let account of ACCOUNTS) {
       if (account.nextRun < dateTimeNow) {
         const successCallback = (log: string) => {
-          const nextRun = new Date();
-          if(utcHours > 22)
-          {
-            nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
-            console.log("it's too late. I go to bed", account);
-          }
-
-          nextRun.setMinutes(
-            new Date().getMinutes() + 60 + getRandomNumber(20)
-          );
+          const nextRun = getNextRunSuccess(account.name);
 
           account.nextRun = nextRun;
           console.log(log, "next run:", account.nextRun.toUTCString());
         };
 
         const errorCallback = (log: string) => {
-          const nextRun = new Date();
-          if(utcHours > 22)
-          {
-            nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
-            console.log("it's too late. I go to bed", account);
-          }
-
-          nextRun.setMinutes(new Date().getMinutes() + getRandomNumber(10));
+          const nextRun = getNextRunFailure(account.name);
 
           account.nextRun = nextRun;
           console.log(
@@ -177,6 +163,46 @@ const runSpinningWheelInALoop = () => {
   }, ONE_MINUTE);
 };
 
+const getNextRunSuccess = (account_name: string) => {
+  const dateTimeNow = new Date();
+  const utcHours = dateTimeNow.getUTCHours();
+  const isWhiteListed = WHITE_LIST.includes(account_name);
+
+  const nextRun = new Date();
+
+  if(!isWhiteListed)
+  {
+    nextRun.setMinutes(new Date().getMinutes() + 60);
+
+    return nextRun;
+  }
+
+  if (utcHours > 22) {
+    nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+    console.log("it's too late. I go to bed", account_name);
+  }
+
+  nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomNumber(20));
+
+  return nextRun;
+};
+
+const getNextRunFailure = (account_name: string) => {
+  const dateTimeNow = new Date();
+  const utcHours = dateTimeNow.getUTCHours();
+  const isWhiteListed = WHITE_LIST.includes(account_name);
+
+  const nextRun = new Date();
+  if (isWhiteListed && utcHours > 22) {
+    nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+    console.log("it's too late. I go to bed", account_name);
+  }
+
+  nextRun.setMinutes(new Date().getMinutes() + getRandomNumber(10));
+
+  return nextRun;
+};
+
 const main = async () => {
   const nextRunDelay = 0;
   await delay(nextRunDelay);
@@ -185,7 +211,7 @@ const main = async () => {
 };
 
 // const main = async () => {
-//   await spinWheelSingleTime("volodymyr", () => {});
+//   await spinWheelSingleTime("micro_strategy", () => {});
 // };
 
 main();
