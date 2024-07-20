@@ -51,6 +51,7 @@ ACCOUNTS.forEach(function (account) {
     nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(10));
     account.nextRun = nextRun;
 });
+var WHITE_LIST = ["volodymyr", "oneplusone", "whale", "xiomi", "oksana", "gt_turbo"];
 var maxFailuresBeforeLog = 30;
 var ONE_MINUTE = 60000;
 var SECURITY_COOKIE_BEGINNING = "wordpress_sec_e8545d4d14fb7e95140409c6df04e61f=";
@@ -133,7 +134,7 @@ var spinWheelSingleTime = function (accountName, successCallback, errorCallback)
                     }); }); })];
             case 1:
                 _a = _b.sent(), result = _a.result, time = _a.time;
-                logToFileString = "".concat(accountName, " ").concat(new Date().toUTCString(), "; ").concat(result, "; ").concat(time);
+                logToFileString = "".concat(accountName, " score: ").concat(result, "; ").concat(time, " ").concat(new Date().toUTCString());
                 if (!result || result === 0) {
                     errorCallback === null || errorCallback === void 0 ? void 0 : errorCallback(logToFileString);
                 }
@@ -154,32 +155,21 @@ var spinWheelSingleTime = function (accountName, successCallback, errorCallback)
 exports.spinWheelSingleTime = spinWheelSingleTime;
 var runSpinningWheelInALoop = function () {
     setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var dateTimeNow, utcHours, promises, _loop_1, _i, ACCOUNTS_1, account;
+        var promises, dateTimeNow, _loop_1, _i, ACCOUNTS_1, account;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    dateTimeNow = new Date();
-                    utcHours = dateTimeNow.getUTCHours();
                     promises = [];
+                    dateTimeNow = new Date();
                     _loop_1 = function (account) {
                         if (account.nextRun < dateTimeNow) {
                             var successCallback = function (log) {
-                                var nextRun = new Date();
-                                if (utcHours > 22) {
-                                    nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
-                                    console.log("it's too late. I go to bed", account);
-                                }
-                                nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomNumber(20));
+                                var nextRun = getNextRunSuccess(account.name);
                                 account.nextRun = nextRun;
                                 console.log(log, "next run:", account.nextRun.toUTCString());
                             };
                             var errorCallback = function (log) {
-                                var nextRun = new Date();
-                                if (utcHours > 22) {
-                                    nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
-                                    console.log("it's too late. I go to bed", account);
-                                }
-                                nextRun.setMinutes(new Date().getMinutes() + getRandomNumber(10));
+                                var nextRun = getNextRunFailure(account.name);
                                 account.nextRun = nextRun;
                                 console.log("run failed", log, "next run:", account.nextRun.toUTCString());
                             };
@@ -199,6 +189,34 @@ var runSpinningWheelInALoop = function () {
         });
     }); }, ONE_MINUTE);
 };
+var getNextRunSuccess = function (account_name) {
+    var dateTimeNow = new Date();
+    var utcHours = dateTimeNow.getUTCHours();
+    var isWhiteListed = WHITE_LIST.includes(account_name);
+    var nextRun = new Date();
+    if (!isWhiteListed) {
+        nextRun.setMinutes(new Date().getMinutes() + 60);
+        return nextRun;
+    }
+    if (utcHours > 22) {
+        nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+        console.log("it's too late. I go to bed", account_name);
+    }
+    nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomNumber(20));
+    return nextRun;
+};
+var getNextRunFailure = function (account_name) {
+    var dateTimeNow = new Date();
+    var utcHours = dateTimeNow.getUTCHours();
+    var isWhiteListed = WHITE_LIST.includes(account_name);
+    var nextRun = new Date();
+    if (isWhiteListed && utcHours > 22) {
+        nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+        console.log("it's too late. I go to bed", account_name);
+    }
+    nextRun.setMinutes(new Date().getMinutes() + getRandomNumber(10));
+    return nextRun;
+};
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
     var nextRunDelay;
     return __generator(this, function (_a) {
@@ -214,6 +232,6 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
     });
 }); };
 // const main = async () => {
-//   await spinWheelSingleTime("volodymyr", () => {});
+//   await spinWheelSingleTime("micro_strategy", () => {});
 // };
 main();
