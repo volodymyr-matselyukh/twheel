@@ -86,7 +86,7 @@ function delay(time) {
     return new Promise(function (resolve) { return setTimeout(resolve, time); });
 }
 var bombardWithPostTransactions = function (accountName) { return __awaiter(void 0, void 0, void 0, function () {
-    var score, bodyFormData, accountConfig, response, error_1;
+    var score, bodyFormData, accountConfig, response, err_1, error, message;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -116,8 +116,19 @@ var bombardWithPostTransactions = function (accountName) { return __awaiter(void
                 score = response.data.split(" ")[0];
                 return [3 /*break*/, 4];
             case 3:
-                error_1 = _a.sent();
-                console.log("error running promise", error_1);
+                err_1 = _a.sent();
+                error = err_1;
+                message = {};
+                if (error.response) {
+                    message.data = error.response.data;
+                    message.status = error.response.status;
+                    message.headers = error.response.headers;
+                }
+                if (error.request) {
+                    message.request = error.request;
+                }
+                message.message = error.message;
+                console.log("error running promise", JSON.stringify(message));
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/, score];
         }
@@ -127,7 +138,7 @@ var logToFile = function (logString) {
     fs.appendFileSync("./log", util.format(logString) + "\n");
 };
 var tryExecuteWithTimeMeasurement = function (callback) { return __awaiter(void 0, void 0, void 0, function () {
-    var precision, start, result, elapsed, error_2;
+    var precision, start, result, elapsed, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -140,15 +151,15 @@ var tryExecuteWithTimeMeasurement = function (callback) { return __awaiter(void 
                 elapsed = process.hrtime(start)[1] / 1000000;
                 return [2 /*return*/, { result: result, time: elapsed.toFixed(precision) }];
             case 2:
-                error_2 = _a.sent();
+                error_1 = _a.sent();
                 console.log("error measuring time");
-                throw error_2;
+                throw error_1;
             case 3: return [2 /*return*/];
         }
     });
 }); };
 var spinWheelSingleTime = function (accountName, successCallback, errorCallback) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, logToFileString, error_3;
+    var result, logToFileString, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -171,9 +182,9 @@ var spinWheelSingleTime = function (accountName, successCallback, errorCallback)
                 logToFile(logToFileString);
                 return [2 /*return*/, logToFileString];
             case 2:
-                error_3 = _a.sent();
+                error_2 = _a.sent();
                 errorCallback === null || errorCallback === void 0 ? void 0 : errorCallback("unhandled error");
-                console.log("error executing main", error_3);
+                console.log("error executing main", JSON.stringify(error_2));
                 return [2 /*return*/, "error executing main"];
             case 3: return [2 /*return*/];
         }

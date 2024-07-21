@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUtcDateTimeString = void 0;
 var getUtcDateTimeString = function (date) {
     var month = date.getUTCMonth();
-    var day = date.getUTCDay();
+    var day = date.getUTCDate();
     var hours = date.getUTCHours();
     var hoursString = hours.toString();
     if (hours < 10) {

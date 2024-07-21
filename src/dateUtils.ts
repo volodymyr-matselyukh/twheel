@@ -1,6 +1,6 @@
 export const getUtcDateTimeString = (date: Date) => {
     const month = date.getUTCMonth();
-    const day = date.getUTCDay();
+    const day = date.getUTCDate();
     const hours = date.getUTCHours();
     let hoursString = hours.toString();
     if(hours < 10)

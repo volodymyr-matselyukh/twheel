@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import * as fs from "fs";
 import * as util from "util";
 import { getUtcDateTimeString } from "./dateUtils";
+import { AxiosError } from "axios";
 
 dotenv.config();
 
@@ -94,8 +95,24 @@ const bombardWithPostTransactions = async (accountName: string) => {
     }
 
     score = response.data.split(" ")[0];
-  } catch (error) {
-    console.log(`error running promise`, error);
+  } catch (err: unknown) {
+    const error = err as AxiosError;
+    const message: any = {};
+
+    if (error.response) {
+      message.data = error.response.data;
+      message.status = error.response.status;
+      message.headers = error.response.headers;
+    } 
+    
+    if (error.request) {
+      message.request = error.request;
+    } 
+    
+    message.message = error.message;
+    
+
+    console.log(`error running promise`, JSON.stringify(message));
   }
 
   return score;
@@ -147,7 +164,7 @@ export const spinWheelSingleTime = async (
     return logToFileString;
   } catch (error) {
     errorCallback?.("unhandled error");
-    console.log("error executing main", error);
+    console.log("error executing main", JSON.stringify(error));
     return "error executing main";
   }
 };
