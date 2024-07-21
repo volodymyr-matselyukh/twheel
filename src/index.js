@@ -41,6 +41,7 @@ var axios_1 = require("axios");
 var dotenv = require("dotenv");
 var fs = require("fs");
 var util = require("util");
+var dateUtils_1 = require("./dateUtils");
 dotenv.config();
 var ACCOUNTS = JSON.parse(process.env.ACCOUNTS);
 var getRandomNumber = function (upperLimit) {
@@ -48,10 +49,36 @@ var getRandomNumber = function (upperLimit) {
 };
 ACCOUNTS.forEach(function (account) {
     var nextRun = new Date();
-    nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(10));
+    nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(80));
     account.nextRun = nextRun;
 });
-var WHITE_LIST = ["volodymyr", "oneplusone", "whale", "xiomi", "oksana", "gt_turbo"];
+var WHITE_LIST = [
+    "volodymyr",
+    "oneplusone",
+    "whale",
+    "xiomi",
+    "oksana",
+    "gt_turbo",
+    "micro_strategy",
+    "ukraine_number_1",
+    "papa_pepe",
+    "father_btc",
+    "red_frog_lover",
+    "drug_diller",
+    "machine_gun",
+    "eagerdev",
+    "guinea_pig",
+    "freddy_kruger",
+    "santa_lucia",
+    "monika_belucci",
+    "mercury_m",
+    "empty_fridge",
+    "sponge_bob",
+    "venomancer",
+    "volodymyr_zelenskyi",
+    "petro_poroshenko",
+    "kicia_kocia",
+];
 var maxFailuresBeforeLog = 30;
 var ONE_MINUTE = 60000;
 var SECURITY_COOKIE_BEGINNING = "wordpress_sec_e8545d4d14fb7e95140409c6df04e61f=";
@@ -121,11 +148,11 @@ var tryExecuteWithTimeMeasurement = function (callback) { return __awaiter(void 
     });
 }); };
 var spinWheelSingleTime = function (accountName, successCallback, errorCallback) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, result, time, logToFileString, error_3;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var result, logToFileString, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _b.trys.push([0, 2, , 3]);
+                _a.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, tryExecuteWithTimeMeasurement(function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, bombardWithPostTransactions(accountName)];
@@ -133,8 +160,8 @@ var spinWheelSingleTime = function (accountName, successCallback, errorCallback)
                         }
                     }); }); })];
             case 1:
-                _a = _b.sent(), result = _a.result, time = _a.time;
-                logToFileString = "".concat(accountName, " score: ").concat(result, "; ").concat(time, " ").concat(new Date().toUTCString());
+                result = (_a.sent()).result;
+                logToFileString = "".concat(accountName, " score: ").concat(result, "; ").concat((0, dateUtils_1.getUtcDateTimeString)(new Date()));
                 if (!result || result === 0) {
                     errorCallback === null || errorCallback === void 0 ? void 0 : errorCallback(logToFileString);
                 }
@@ -144,7 +171,7 @@ var spinWheelSingleTime = function (accountName, successCallback, errorCallback)
                 logToFile(logToFileString);
                 return [2 /*return*/, logToFileString];
             case 2:
-                error_3 = _b.sent();
+                error_3 = _a.sent();
                 errorCallback === null || errorCallback === void 0 ? void 0 : errorCallback("unhandled error");
                 console.log("error executing main", error_3);
                 return [2 /*return*/, "error executing main"];
@@ -166,7 +193,7 @@ var runSpinningWheelInALoop = function () {
                             var successCallback = function (log) {
                                 var nextRun = getNextRunSuccess(account.name);
                                 account.nextRun = nextRun;
-                                console.log(log, "next run:", account.nextRun.toUTCString());
+                                console.log(log, "next run:", (0, dateUtils_1.getUtcDateTimeString)(account.nextRun));
                             };
                             var errorCallback = function (log) {
                                 var nextRun = getNextRunFailure(account.name);

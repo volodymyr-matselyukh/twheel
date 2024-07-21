@@ -2,6 +2,7 @@ import axios from "axios";
 import * as dotenv from "dotenv";
 import * as fs from "fs";
 import * as util from "util";
+import { getUtcDateTimeString } from "./dateUtils";
 
 dotenv.config();
 
@@ -19,11 +20,37 @@ const getRandomNumber = (upperLimit: number) => {
 
 ACCOUNTS.forEach((account) => {
   const nextRun = new Date();
-  nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(10));
+  nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(80));
   account.nextRun = nextRun;
 });
 
-const WHITE_LIST = ["volodymyr", "oneplusone", "whale", "xiomi", "oksana", "gt_turbo"];
+const WHITE_LIST = [
+  "volodymyr",
+  "oneplusone",
+  "whale",
+  "xiomi",
+  "oksana",
+  "gt_turbo",
+  "micro_strategy",
+  "ukraine_number_1",
+  "papa_pepe",
+  "father_btc",
+  "red_frog_lover",
+  "drug_diller",
+  "machine_gun",
+  "eagerdev",
+  "guinea_pig",
+  "freddy_kruger",
+  "santa_lucia",
+  "monika_belucci",
+  "mercury_m",
+  "empty_fridge",
+  "sponge_bob",
+  "venomancer",
+  "volodymyr_zelenskyi",
+  "petro_poroshenko",
+  "kicia_kocia",
+];
 
 const maxFailuresBeforeLog = 30;
 const ONE_MINUTE = 60000;
@@ -101,11 +128,13 @@ export const spinWheelSingleTime = async (
   errorCallback?: (log: string) => void
 ) => {
   try {
-    const { result, time } = await tryExecuteWithTimeMeasurement(
+    const { result } = await tryExecuteWithTimeMeasurement(
       async () => await bombardWithPostTransactions(accountName)
     );
 
-    const logToFileString = `${accountName} score: ${result}; ${time} ${new Date().toUTCString()}`;
+    const logToFileString = `${accountName} score: ${result}; ${getUtcDateTimeString(
+      new Date()
+    )}`;
 
     if (!result || result === 0) {
       errorCallback?.(logToFileString);
@@ -134,7 +163,7 @@ const runSpinningWheelInALoop = () => {
           const nextRun = getNextRunSuccess(account.name);
 
           account.nextRun = nextRun;
-          console.log(log, "next run:", account.nextRun.toUTCString());
+          console.log(log, "next run:", getUtcDateTimeString(account.nextRun));
         };
 
         const errorCallback = (log: string) => {
@@ -170,8 +199,7 @@ const getNextRunSuccess = (account_name: string) => {
 
   const nextRun = new Date();
 
-  if(!isWhiteListed)
-  {
+  if (!isWhiteListed) {
     nextRun.setMinutes(new Date().getMinutes() + 60);
 
     return nextRun;
