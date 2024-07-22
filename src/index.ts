@@ -212,7 +212,7 @@ const runSpinningWheelInALoop = () => {
 const getNextRunSuccess = (account_name: string) => {
   const dateTimeNow = new Date();
   const utcHours = dateTimeNow.getUTCHours();
-  const isWhiteListed = WHITE_LIST.includes(account_name);
+  const isWhiteListed = true;//WHITE_LIST.includes(account_name);
 
   const nextRun = new Date();
 
@@ -235,7 +235,7 @@ const getNextRunSuccess = (account_name: string) => {
 const getNextRunFailure = (account_name: string) => {
   const dateTimeNow = new Date();
   const utcHours = dateTimeNow.getUTCHours();
-  const isWhiteListed = WHITE_LIST.includes(account_name);
+  const isWhiteListed = true;//WHITE_LIST.includes(account_name);
 
   const nextRun = new Date();
   if (isWhiteListed && utcHours > 22) {

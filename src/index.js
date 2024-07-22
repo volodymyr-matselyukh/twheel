@@ -230,7 +230,7 @@ var runSpinningWheelInALoop = function () {
 var getNextRunSuccess = function (account_name) {
     var dateTimeNow = new Date();
     var utcHours = dateTimeNow.getUTCHours();
-    var isWhiteListed = WHITE_LIST.includes(account_name);
+    var isWhiteListed = true; //WHITE_LIST.includes(account_name);
     var nextRun = new Date();
     if (!isWhiteListed) {
         nextRun.setMinutes(new Date().getMinutes() + 60);
@@ -246,7 +246,7 @@ var getNextRunSuccess = function (account_name) {
 var getNextRunFailure = function (account_name) {
     var dateTimeNow = new Date();
     var utcHours = dateTimeNow.getUTCHours();
-    var isWhiteListed = WHITE_LIST.includes(account_name);
+    var isWhiteListed = true; //WHITE_LIST.includes(account_name);
     var nextRun = new Date();
     if (isWhiteListed && utcHours > 22) {
         nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
