@@ -145,6 +145,8 @@ export const spinWheelSingleTime = async (
   errorCallback?: (log: string) => void
 ) => {
   try {
+    await delay(getRandomNumber(50000));
+
     const { result } = await tryExecuteWithTimeMeasurement(
       async () => await bombardWithPostTransactions(accountName)
     );

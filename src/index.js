@@ -163,14 +163,17 @@ var spinWheelSingleTime = function (accountName, successCallback, errorCallback)
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, delay(getRandomNumber(50000))];
+            case 1:
+                _a.sent();
                 return [4 /*yield*/, tryExecuteWithTimeMeasurement(function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, bombardWithPostTransactions(accountName)];
                             case 1: return [2 /*return*/, _a.sent()];
                         }
                     }); }); })];
-            case 1:
+            case 2:
                 result = (_a.sent()).result;
                 logToFileString = "".concat(accountName, " score: ").concat(result, "; ").concat((0, dateUtils_1.getUtcDateTimeString)(new Date()));
                 if (!result || result === 0) {
@@ -181,12 +184,12 @@ var spinWheelSingleTime = function (accountName, successCallback, errorCallback)
                 }
                 logToFile(logToFileString);
                 return [2 /*return*/, logToFileString];
-            case 2:
+            case 3:
                 error_2 = _a.sent();
                 errorCallback === null || errorCallback === void 0 ? void 0 : errorCallback("unhandled error");
                 console.log("error executing main", JSON.stringify(error_2));
                 return [2 /*return*/, "error executing main"];
-            case 3: return [2 /*return*/];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
