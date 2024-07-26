@@ -225,11 +225,11 @@ const getNextRunSuccess = (account_name: string) => {
   }
 
   if (utcHours > 22) {
-    nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+    nextRun.setHours(nextRun.getHours() + 3 + getRandomNumber(3));
     console.log("it's too late. I go to bed", account_name);
   }
 
-  nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomNumber(20));
+  nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomNumber(10));
 
   return nextRun;
 };
@@ -241,7 +241,7 @@ const getNextRunFailure = (account_name: string) => {
 
   const nextRun = new Date();
   if (isWhiteListed && utcHours > 22) {
-    nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+    nextRun.setHours(nextRun.getHours() + 3 + getRandomNumber(3));
     console.log("it's too late. I go to bed", account_name);
   }
 

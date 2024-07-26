@@ -240,10 +240,10 @@ var getNextRunSuccess = function (account_name) {
         return nextRun;
     }
     if (utcHours > 22) {
-        nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+        nextRun.setHours(nextRun.getHours() + 3 + getRandomNumber(3));
         console.log("it's too late. I go to bed", account_name);
     }
-    nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomNumber(20));
+    nextRun.setMinutes(new Date().getMinutes() + 60 + getRandomNumber(10));
     return nextRun;
 };
 var getNextRunFailure = function (account_name) {
@@ -252,7 +252,7 @@ var getNextRunFailure = function (account_name) {
     var isWhiteListed = true; //WHITE_LIST.includes(account_name);
     var nextRun = new Date();
     if (isWhiteListed && utcHours > 22) {
-        nextRun.setHours(nextRun.getHours() + 5 + getRandomNumber(3));
+        nextRun.setHours(nextRun.getHours() + 3 + getRandomNumber(3));
         console.log("it's too late. I go to bed", account_name);
     }
     nextRun.setMinutes(new Date().getMinutes() + getRandomNumber(10));
