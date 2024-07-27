@@ -21,7 +21,7 @@ const getRandomNumber = (upperLimit: number) => {
 
 ACCOUNTS.forEach((account) => {
   const nextRun = new Date();
-  nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(80));
+  nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(30));
   account.nextRun = nextRun;
 });
 

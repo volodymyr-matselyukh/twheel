@@ -49,7 +49,7 @@ var getRandomNumber = function (upperLimit) {
 };
 ACCOUNTS.forEach(function (account) {
     var nextRun = new Date();
-    nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(80));
+    nextRun.setMinutes(nextRun.getMinutes() + getRandomNumber(30));
     account.nextRun = nextRun;
 });
 var WHITE_LIST = [
